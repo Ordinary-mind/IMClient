@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +17,11 @@ namespace IMClient
         public delegate void appendTextDelegate(String msg);
         ClientHelper clientHelper = null;
         byte[] bytes = new byte[1024];
+        MySqlConnection connection = null;
+        MySqlCommand command = null;
+        MySqlDataReader reader = null;
+        String connnectStr = "server=127.0.0.1;port=3306;user=root;password=lqn.091023; database=network;SslMode = none;";
+        string sql = null;
         public Form1()
         {
             
@@ -92,6 +98,7 @@ namespace IMClient
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.toolStripStatusLabel1.Text = "已连接到服务器";
             try
             {
                 NetworkStream stream = clientHelper.tcpClient.GetStream();
@@ -106,6 +113,22 @@ namespace IMClient
                     stream.Write(data, 0, data.Length);
                 }
             }catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            try
+            {
+                sql = "select f.friend_id,u.user_id,u.nick_name from friend f left join useraccount u on f.friend_id=u.user_id where f.self_id=" + clientHelper.UserId;
+                connection = new MySqlConnection(connnectStr);
+                connection.Open();
+                command = new MySqlCommand(sql, connection);
+                MySqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    this.cbFriendList.Items.Add(reader.GetString("nick_name"));
+                }
+            }
+            catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }

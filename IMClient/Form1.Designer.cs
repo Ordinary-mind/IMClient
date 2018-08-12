@@ -29,39 +29,37 @@
         private void InitializeComponent()
         {
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.tbTip = new System.Windows.Forms.TextBox();
             this.btnSendData = new System.Windows.Forms.Button();
             this.tbSendData = new System.Windows.Forms.TextBox();
             this.tbChatContent = new System.Windows.Forms.TextBox();
             this.lbChatContent = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cbFriendList = new System.Windows.Forms.ComboBox();
+            this.lbFriendList = new System.Windows.Forms.Label();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.tbTip);
             this.groupBox2.Controls.Add(this.btnSendData);
             this.groupBox2.Controls.Add(this.tbSendData);
             this.groupBox2.Controls.Add(this.tbChatContent);
             this.groupBox2.Controls.Add(this.lbChatContent);
-            this.groupBox2.Location = new System.Drawing.Point(23, 12);
+            this.groupBox2.Location = new System.Drawing.Point(22, 117);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(437, 440);
+            this.groupBox2.Size = new System.Drawing.Size(546, 343);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "交互区";
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
-            // tbTip
-            // 
-            this.tbTip.Location = new System.Drawing.Point(76, 295);
-            this.tbTip.Name = "tbTip";
-            this.tbTip.Size = new System.Drawing.Size(340, 21);
-            this.tbTip.TabIndex = 6;
-            // 
             // btnSendData
             // 
-            this.btnSendData.Location = new System.Drawing.Point(356, 250);
+            this.btnSendData.Location = new System.Drawing.Point(465, 292);
             this.btnSendData.Name = "btnSendData";
             this.btnSendData.Size = new System.Drawing.Size(60, 23);
             this.btnSendData.TabIndex = 5;
@@ -71,9 +69,9 @@
             // 
             // tbSendData
             // 
-            this.tbSendData.Location = new System.Drawing.Point(76, 252);
+            this.tbSendData.Location = new System.Drawing.Point(76, 294);
             this.tbSendData.Name = "tbSendData";
-            this.tbSendData.Size = new System.Drawing.Size(274, 21);
+            this.tbSendData.Size = new System.Drawing.Size(383, 21);
             this.tbSendData.TabIndex = 4;
             // 
             // tbChatContent
@@ -81,7 +79,7 @@
             this.tbChatContent.Location = new System.Drawing.Point(76, 29);
             this.tbChatContent.Multiline = true;
             this.tbChatContent.Name = "tbChatContent";
-            this.tbChatContent.Size = new System.Drawing.Size(340, 204);
+            this.tbChatContent.Size = new System.Drawing.Size(449, 245);
             this.tbChatContent.TabIndex = 3;
             // 
             // lbChatContent
@@ -93,18 +91,69 @@
             this.lbChatContent.TabIndex = 1;
             this.lbChatContent.Text = "聊天记录";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.lbFriendList);
+            this.groupBox1.Controls.Add(this.cbFriendList);
+            this.groupBox1.Location = new System.Drawing.Point(22, 26);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(546, 71);
+            this.groupBox1.TabIndex = 2;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "信息区";
+            // 
+            // cbFriendList
+            // 
+            this.cbFriendList.FormattingEnabled = true;
+            this.cbFriendList.Location = new System.Drawing.Point(76, 28);
+            this.cbFriendList.Name = "cbFriendList";
+            this.cbFriendList.Size = new System.Drawing.Size(196, 20);
+            this.cbFriendList.TabIndex = 0;
+            // 
+            // lbFriendList
+            // 
+            this.lbFriendList.AutoSize = true;
+            this.lbFriendList.Location = new System.Drawing.Point(17, 31);
+            this.lbFriendList.Name = "lbFriendList";
+            this.lbFriendList.Size = new System.Drawing.Size(53, 12);
+            this.lbFriendList.TabIndex = 1;
+            this.lbFriendList.Text = "好友列表";
+            // 
+            // statusStrip
+            // 
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
+            this.statusStrip.Location = new System.Drawing.Point(0, 485);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(597, 22);
+            this.statusStrip.TabIndex = 3;
+            this.statusStrip.Text = "状态栏";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(56, 17);
+            this.toolStripStatusLabel1.Text = "状态信息";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(488, 472);
+            this.ClientSize = new System.Drawing.Size(597, 507);
+            this.Controls.Add(this.statusStrip);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Name = "Form1";
             this.Text = "IM客户端";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -114,7 +163,11 @@
         private System.Windows.Forms.TextBox tbSendData;
         private System.Windows.Forms.TextBox tbChatContent;
         private System.Windows.Forms.Label lbChatContent;
-        private System.Windows.Forms.TextBox tbTip;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label lbFriendList;
+        private System.Windows.Forms.ComboBox cbFriendList;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
 
