@@ -14,62 +14,22 @@ namespace IMClient
     public partial class Form1 : Form
     {
         public delegate void appendTextDelegate(String msg);
-        TcpClient client = null;
+        ClientHelper clientHelper = null;
+        byte[] bytes = new byte[1024];
         public Form1()
         {
-            InitializeComponent();
-        }
-
-        private void tbConnectServer_Click(object sender, EventArgs e)
-        {
-            String serverIP = null;
-            int port;
-            try
-            {
-                serverIP = this.tbServerIP.Text.Trim();
-                port = Convert.ToInt32(this.tbPort.Text);
-                if (client != null)
-                {
-                    MessageBox.Show("不能重复登录");
-                }
-                else
-                {
-                    client = new TcpClient();
-                    client.BeginConnect(serverIP, port, connectServerCallback, client);
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-        byte[] bytes = new byte[1024];
-        private void connectServerCallback(IAsyncResult ar)
-        {
-            client = (TcpClient)ar.AsyncState;
-            if (client != null)
-            {
-                try
-                {
-                    client.EndConnect(ar);
-                    tbTip.AppendText("已连接到服务器");
-                    NetworkStream stream = client.GetStream();
-
-                    if (stream.CanRead)
-                    {
-                        stream.BeginRead(bytes, 0, bytes.Length, new AsyncCallback(receiveDataCallback), stream);
-                    }
-                }catch(Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
             
+        }
+        public Form1(ClientHelper clientHelper)
+        {
+            InitializeComponent();
+            this.clientHelper = clientHelper;
         }
 
         private void receiveDataCallback(IAsyncResult ar)
         {
-            NetworkStream stream = (NetworkStream)ar.AsyncState;
+            ClientHelper helper = (ClientHelper)ar.AsyncState;
+            NetworkStream stream = helper.tcpClient.GetStream();
             int recvCount = 0;
             if (stream.CanRead)
             {
@@ -80,7 +40,7 @@ namespace IMClient
                     byte[] buffer = new byte[recvCount];
                     Array.Copy(bytes, 0, buffer, 0, recvCount);
                     this.appendTextInvoke("收←" + Encoding.UTF8.GetString(buffer) + "\n");
-                    stream.BeginRead(bytes, 0, bytes.Length, receiveDataCallback, stream);
+                    stream.BeginRead(bytes, 0, bytes.Length, receiveDataCallback, helper);
                 }
             }
 
@@ -103,36 +63,51 @@ namespace IMClient
         private void btnSendData_Click(object sender, EventArgs e)
         {
             string msg = this.tbSendData.Text;
-            if (client == null) return;
-            if (client.Connected == false) return;
+            if (clientHelper.tcpClient == null) return;
+            if (clientHelper.tcpClient.Connected == false) return;
 
             byte[] data = Encoding.UTF8.GetBytes(msg);
 
             int len = data.Length;
 
-            NetworkStream writeStream = client.GetStream();
+            NetworkStream writeStream = clientHelper.tcpClient.GetStream();
             if (writeStream.CanWrite)
             {
                writeStream.Write(data, 0, len);
-                this.tbChatContent.AppendText("发→" + msg + "\n");
+               this.tbChatContent.AppendText("发→" + msg + "\n");
             }
             else
             {
                 MessageBox.Show("写流无法使用");
-                client.Close();
+                clientHelper.tcpClient.Close();
             }
 
         }
 
-        private void tbDisconnectServer_Click(object sender, EventArgs e)
+
+        private void groupBox2_Enter(object sender, EventArgs e)
         {
-            if (client != null)
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            try
             {
-                client = null;
-            }
-            else
+                NetworkStream stream = clientHelper.tcpClient.GetStream();
+                if (stream.CanRead)
+                {
+                    stream.BeginRead(bytes, 0, bytes.Length, receiveDataCallback, clientHelper);
+                }
+                if (stream.CanWrite)
+                {
+                    string msg = "@" + clientHelper.UserId + "," + clientHelper.NickName + "@";
+                    byte[] data = Encoding.UTF8.GetBytes(msg);
+                    stream.Write(data, 0, data.Length);
+                }
+            }catch(Exception ex)
             {
-                MessageBox.Show("您未与服务器建立连接");
+                MessageBox.Show(ex.Message);
             }
         }
     }

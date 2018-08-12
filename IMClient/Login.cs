@@ -1,12 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
+using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace IMClient
@@ -18,7 +13,10 @@ namespace IMClient
         MySqlDataReader reader = null;
         String connnectStr = "server=127.0.0.1;port=3306;user=root;password=lqn.091023; database=network;SslMode = none;";
         String sql = null;
-        UserAccount account = null;
+        ClientHelper helper = null;
+        string serverIP = "127.0.0.1";
+        int port = 9000;
+        byte[] bytes = new byte[1024];
         public Login()
         {
             InitializeComponent();
@@ -44,19 +42,49 @@ namespace IMClient
                     MySqlDataReader reader = command.ExecuteReader();
                     if (reader.Read())
                     {
-                        account = new UserAccount();
-                        account.UserId = reader.GetInt32("user_id");
-                        account.NickName = reader.GetString("nick_name");
+                        helper = new ClientHelper();
+                        helper.UserId = reader.GetInt32("user_id");
+                        helper.NickName = reader.GetString("nick_name");
                         connection.Close();
-                        this.Hide();
-                        Form1 form1 = new Form1(account);
-                        form1.Show();
+                        try
+                        {
+                            {
+                                helper.tcpClient = new TcpClient();
+                                helper.tcpClient.BeginConnect(serverIP, port, connectServerCallback, helper);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
                     }
                     else
                     {
                         connection.Close();
                         MessageBox.Show("用户名或密码错误！");
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void connectServerCallback(IAsyncResult ar)
+        {
+            ClientHelper clientHelper = (ClientHelper)ar.AsyncState;
+            if (clientHelper.tcpClient != null)
+            {
+                try
+                {
+                    clientHelper.tcpClient.EndConnect(ar);
+                    this.Invoke((EventHandler)delegate{
+                        this.Hide();
+                        Form1 form1 = new Form1(clientHelper);
+                        form1.Show();
+                                 });
+                    
                 }
                 catch (Exception ex)
                 {
