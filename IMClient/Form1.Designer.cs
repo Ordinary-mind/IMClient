@@ -1,4 +1,7 @@
-﻿namespace IMClient
+﻿using System;
+using System.Windows.Forms;
+
+namespace IMClient
 {
     partial class Form1
     {
@@ -34,8 +37,9 @@
             this.tbChatContent = new System.Windows.Forms.TextBox();
             this.lbChatContent = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.cbFriendList = new System.Windows.Forms.ComboBox();
+            this.btnAddFriend = new System.Windows.Forms.Button();
             this.lbFriendList = new System.Windows.Forms.Label();
+            this.cbFriendList = new System.Windows.Forms.ComboBox();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox2.SuspendLayout();
@@ -93,6 +97,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnAddFriend);
             this.groupBox1.Controls.Add(this.lbFriendList);
             this.groupBox1.Controls.Add(this.cbFriendList);
             this.groupBox1.Location = new System.Drawing.Point(22, 26);
@@ -102,13 +107,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "信息区";
             // 
-            // cbFriendList
+            // btnAddFriend
             // 
-            this.cbFriendList.FormattingEnabled = true;
-            this.cbFriendList.Location = new System.Drawing.Point(76, 28);
-            this.cbFriendList.Name = "cbFriendList";
-            this.cbFriendList.Size = new System.Drawing.Size(196, 20);
-            this.cbFriendList.TabIndex = 0;
+            this.btnAddFriend.Location = new System.Drawing.Point(434, 25);
+            this.btnAddFriend.Name = "btnAddFriend";
+            this.btnAddFriend.Size = new System.Drawing.Size(75, 23);
+            this.btnAddFriend.TabIndex = 2;
+            this.btnAddFriend.Text = "添加好友";
+            this.btnAddFriend.UseVisualStyleBackColor = true;
+            this.btnAddFriend.Click += new System.EventHandler(this.btnAddFriend_Click);
             // 
             // lbFriendList
             // 
@@ -118,6 +125,14 @@
             this.lbFriendList.Size = new System.Drawing.Size(53, 12);
             this.lbFriendList.TabIndex = 1;
             this.lbFriendList.Text = "好友列表";
+            // 
+            // cbFriendList
+            // 
+            this.cbFriendList.FormattingEnabled = true;
+            this.cbFriendList.Location = new System.Drawing.Point(76, 28);
+            this.cbFriendList.Name = "cbFriendList";
+            this.cbFriendList.Size = new System.Drawing.Size(196, 20);
+            this.cbFriendList.TabIndex = 0;
             // 
             // statusStrip
             // 
@@ -144,7 +159,9 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "IM客户端";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formCloseAction);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -168,6 +185,7 @@
         private System.Windows.Forms.ComboBox cbFriendList;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private Button btnAddFriend;
     }
 }
 

@@ -55,6 +55,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddFriendForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddFriendForm.Designer.cs">
+      <DependentUpon>AddFriendForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DBHelper.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -76,6 +83,9 @@
       <DependentUpon>Register.cs</DependentUpon>
     </Compile>
     <Compile Include="ClientHelper.cs" />
+    <EmbeddedResource Include="AddFriendForm.resx">
+      <DependentUpon>AddFriendForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

@@ -24,7 +24,7 @@ namespace IMClient
         string sql = null;
         public Form1()
         {
-            
+
         }
         public Form1(ClientHelper clientHelper)
         {
@@ -37,17 +37,25 @@ namespace IMClient
             ClientHelper helper = (ClientHelper)ar.AsyncState;
             NetworkStream stream = helper.tcpClient.GetStream();
             int recvCount = 0;
-            if (stream.CanRead)
+            try
             {
-                recvCount = stream.EndRead(ar);
-                if (recvCount != 0)
+                if (stream.CanRead)
                 {
+                    recvCount = stream.EndRead(ar);
+                    if (recvCount != 0)
+                    {
 
-                    byte[] buffer = new byte[recvCount];
-                    Array.Copy(bytes, 0, buffer, 0, recvCount);
-                    this.appendTextInvoke("收←" + Encoding.UTF8.GetString(buffer) + "\n");
-                    stream.BeginRead(bytes, 0, bytes.Length, receiveDataCallback, helper);
+                        byte[] buffer = new byte[recvCount];
+                        Array.Copy(bytes, 0, buffer, 0, recvCount);
+                        this.appendTextInvoke("收←" + Encoding.UTF8.GetString(buffer) + "\n");
+                        stream.BeginRead(bytes, 0, bytes.Length, receiveDataCallback, helper);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                stream.Close();
+                helper.tcpClient.Close();
             }
 
         }
@@ -68,19 +76,22 @@ namespace IMClient
 
         private void btnSendData_Click(object sender, EventArgs e)
         {
+            StringBuilder builder = new StringBuilder();
+            builder.Append("@2@");
             string msg = this.tbSendData.Text;
+            builder.Append(msg);
             if (clientHelper.tcpClient == null) return;
             if (clientHelper.tcpClient.Connected == false) return;
 
-            byte[] data = Encoding.UTF8.GetBytes(msg);
+            byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
 
             int len = data.Length;
 
             NetworkStream writeStream = clientHelper.tcpClient.GetStream();
             if (writeStream.CanWrite)
             {
-               writeStream.Write(data, 0, len);
-               this.tbChatContent.AppendText("发→" + msg + "\n");
+                writeStream.Write(data, 0, len);
+                this.tbChatContent.AppendText("发→" + msg + "\n");
             }
             else
             {
@@ -108,11 +119,12 @@ namespace IMClient
                 }
                 if (stream.CanWrite)
                 {
-                    string msg = "@" + clientHelper.UserId + "," + clientHelper.NickName + "@";
+                    string msg = "@1@" + clientHelper.UserId + "," + clientHelper.NickName;
                     byte[] data = Encoding.UTF8.GetBytes(msg);
                     stream.Write(data, 0, data.Length);
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -128,10 +140,29 @@ namespace IMClient
                     this.cbFriendList.Items.Add(reader.GetString("nick_name"));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        private void formCloseAction(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                DialogResult r = MessageBox.Show("确定要退出程序?", "操作提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (r != DialogResult.OK)
+                {
+                    e.Cancel = true;//阻止关闭窗口
+                }
+                else Application.Exit();
+
+            }
+        }
+
+        private void btnAddFriend_Click(object sender, EventArgs e)
+        {
+            AddFriendForm addFriendForm = new AddFriendForm();
+            addFriendForm.Show();
         }
     }
 }
