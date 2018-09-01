@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,18 +11,18 @@ namespace IMClient
 {
     class DBHelper
     {
-        static String connnectStr = "server=127.0.0.1;port=3306;user=root;password=lqn.091023; database=network;SslMode = none;";
+        static String connnectStr = "server=127.0.0.1;port=3306;user=root;password=12345678; database=network;SslMode = none;";
 
-        public static DataTable QueryData(string sqlStr, params SqlParameter[] parameter)
+        public static DataTable QueryData(string sqlStr, params MySqlParameter[] parameter)
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connnectStr))
+                using (MySqlConnection conn = new MySqlConnection(connnectStr))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand(sqlStr, conn);
+                    MySqlCommand cmd = new MySqlCommand(sqlStr, conn);
                     DataSet dt = new DataSet();
-                    SqlDataAdapter adapter = new SqlDataAdapter();
+                    MySqlDataAdapter adapter = new MySqlDataAdapter();
                     cmd.Parameters.AddRange(parameter);
                     adapter.SelectCommand = cmd;
                     adapter.Fill(dt);
@@ -35,17 +36,16 @@ namespace IMClient
             }
         }
 
-        public static bool UpdateData(string sqlStr, params SqlParameter[] parameter)
+        public static bool UpdateData(string sqlStr, params MySqlParameter[] parameter)
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connnectStr))
+                using (MySqlConnection conn = new MySqlConnection(connnectStr))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand(sqlStr, conn);
+                    MySqlCommand cmd = new MySqlCommand(sqlStr, conn);
                     cmd.Parameters.AddRange(parameter);
                     var row = cmd.ExecuteNonQuery();
-                    conn.Close();
                     if (row > 0)
                     {
                         return true;
@@ -59,14 +59,14 @@ namespace IMClient
             }
         }
 
-        public static bool DeleteData(string sqlStr, params SqlParameter[] parameter)
+        public static bool DeleteData(string sqlStr, params MySqlParameter[] parameter)
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connnectStr))
+                using (MySqlConnection conn = new MySqlConnection(connnectStr))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand(sqlStr, conn);
+                    MySqlCommand cmd = new MySqlCommand(sqlStr, conn);
                     cmd.Parameters.AddRange(parameter);
                     var row = cmd.ExecuteNonQuery();
                     conn.Close();
@@ -83,14 +83,14 @@ namespace IMClient
             }
         }
 
-        public static bool AddData(string sqlStr, params SqlParameter[] parameter)
+        public static bool AddData(string sqlStr, params MySqlParameter[] parameter)
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connnectStr))
+                using (MySqlConnection conn = new MySqlConnection(connnectStr))
                 {
                     conn.Open();
-                    SqlCommand cmd = new SqlCommand(sqlStr, conn);
+                    MySqlCommand cmd = new MySqlCommand(sqlStr, conn);
                     cmd.Parameters.AddRange(parameter);
                     var row = cmd.ExecuteNonQuery();
                     conn.Close();

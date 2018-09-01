@@ -12,24 +12,17 @@ using System.Windows.Forms;
 
 namespace IMClient
 {
-    public partial class Form1 : Form
+    public partial class IMClient : Form
     {
         public delegate void appendTextDelegate(String msg);
-        ClientHelper clientHelper = null;
+        ClientHelper clientHelper = new ClientHelper();
+        string serverIP = "127.0.0.1";
+        int port = 9000;
         byte[] bytes = new byte[1024];
-        MySqlConnection connection = null;
-        MySqlCommand command = null;
-        MySqlDataReader reader = null;
-        String connnectStr = "server=127.0.0.1;port=3306;user=root;password=lqn.091023; database=network;SslMode = none;";
-        string sql = null;
-        public Form1()
+        public IMClient()
         {
-
-        }
-        public Form1(ClientHelper clientHelper)
-        {
+            
             InitializeComponent();
-            this.clientHelper = clientHelper;
         }
 
         private void receiveDataCallback(IAsyncResult ar)
@@ -109,42 +102,9 @@ namespace IMClient
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.toolStripStatusLabel1.Text = "已连接到服务器";
-            try
-            {
-                NetworkStream stream = clientHelper.tcpClient.GetStream();
-                if (stream.CanRead)
-                {
-                    stream.BeginRead(bytes, 0, bytes.Length, receiveDataCallback, clientHelper);
-                }
-                if (stream.CanWrite)
-                {
-                    string msg = "@1@" + clientHelper.UserId + "," + clientHelper.NickName;
-                    byte[] data = Encoding.UTF8.GetBytes(msg);
-                    stream.Write(data, 0, data.Length);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-            try
-            {
-                sql = "select f.friend_id,u.user_id,u.nick_name from friend f left join useraccount u on f.friend_id=u.user_id where f.self_id=" + clientHelper.UserId;
-                connection = new MySqlConnection(connnectStr);
-                connection.Open();
-                command = new MySqlCommand(sql, connection);
-                MySqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    this.cbFriendList.Items.Add(reader.GetString("nick_name"));
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+           
         }
+
         private void formCloseAction(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)

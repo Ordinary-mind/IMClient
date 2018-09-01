@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace IMClient
 {
-    partial class Form1
+    partial class IMClient
     {
         /// <summary>
         /// 必需的设计器变量。

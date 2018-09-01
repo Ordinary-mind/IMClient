@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,7 +25,7 @@ namespace IMClient
             if (!string.IsNullOrEmpty(content))
             {
                 string sql = "select * from useraccount where nick_name=@nick_name";
-                DataTable data = DBHelper.QueryData(sql, new SqlParameter[] { new SqlParameter("nick_name", content) });
+                DataTable data = DBHelper.QueryData(sql, new MySqlParameter[] { new MySqlParameter("nick_name", content) });
                 if (data != null)
                 {
                     for (int i = 0; i < data.Rows.Count; i++)
