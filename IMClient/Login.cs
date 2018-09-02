@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -32,7 +33,7 @@ namespace IMClient
                 try
                 {
                     StringBuilder builder = new StringBuilder();
-                    builder.Append("@1@").Append(userName).Append(password);
+                    builder.Append("@1@" + userName + "," + password);
                     byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
                     int len = data.Length;
                     NetworkStream writeStream = helper.tcpClient.GetStream();
@@ -45,8 +46,34 @@ namespace IMClient
                         MessageBox.Show("写流无法使用");
                         helper.tcpClient.Close();
                     }
+
+                    NetworkStream stream = helper.tcpClient.GetStream();
+                    byte[] recv = new byte[1024];
+                    int length = stream.Read(recv, 0, recv.Length);
+                    byte[] buff = new byte[length];
+                    Array.Copy(recv, buff, length);
+                    string str = Encoding.UTF8.GetString(buff);
+                    string instruction = str.Substring(0, 3);
+                    string content = str.Substring(3);
+                    if (instruction.Equals("@1@"))
+                    {
+                        if (content.Equals("1"))
+                        {
+                            this.Hide();
+                            this.Invoke(new MethodInvoker(() =>
+                            {
+                                IMClient client = new IMClient(helper);
+                                client.Show();
+                            }));
+                        }
+                        else
+                        {
+                            MessageBox.Show("用户名或密码错误！");
+                        }
+                    }
+
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
 
                 }
@@ -73,7 +100,6 @@ namespace IMClient
                 try
                 {
                     clientHelper.tcpClient.EndConnect(ar);
-
                 }
                 catch (Exception ex)
                 {
@@ -82,4 +108,4 @@ namespace IMClient
             }
         }
     }
-    }
+}

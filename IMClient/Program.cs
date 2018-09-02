@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace IMClient
 {
@@ -17,8 +18,7 @@ namespace IMClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Login loginForm = new Login();
-            Application.Run(loginForm);
+            Application.Run(new Login());
         }
     }
 }

@@ -22,6 +22,11 @@ namespace IMClient
         public IMClient()
         {
             
+            
+        }
+        public IMClient(ClientHelper clientHelper)
+        {
+            this.clientHelper = clientHelper;
             InitializeComponent();
         }
 
