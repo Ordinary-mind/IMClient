@@ -64,6 +64,7 @@
     <Compile Include="AddFriendForm.Designer.cs">
       <DependentUpon>AddFriendForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\UserAccount.cs" />
     <Compile Include="IMClient.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,6 +86,7 @@
       <DependentUpon>Register.cs</DependentUpon>
     </Compile>
     <Compile Include="ClientHelper.cs" />
+    <Compile Include="Utils\ComboxItem.cs" />
     <EmbeddedResource Include="AddFriendForm.resx">
       <DependentUpon>AddFriendForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -107,6 +109,7 @@
       <DependentUpon>Register.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\IMClient.Entity.UserAccount.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -120,5 +123,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

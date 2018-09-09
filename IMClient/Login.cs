@@ -33,7 +33,7 @@ namespace IMClient
                 try
                 {
                     StringBuilder builder = new StringBuilder();
-                    builder.Append("@1@" + userName + "," + password);
+                    builder.Append("@01@" + userName + "," + password);
                     byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
                     int len = data.Length;
                     NetworkStream writeStream = helper.tcpClient.GetStream();
@@ -53,9 +53,9 @@ namespace IMClient
                     byte[] buff = new byte[length];
                     Array.Copy(recv, buff, length);
                     string str = Encoding.UTF8.GetString(buff);
-                    string instruction = str.Substring(0, 3);
-                    string content = str.Substring(3);
-                    if (instruction.Equals("@1@"))
+                    string instruction = str.Substring(0, 4);
+                    string content = str.Substring(4);
+                    if (instruction.Equals("@01@"))
                     {
                         if (content.Equals("1"))
                         {

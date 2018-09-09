@@ -1,5 +1,9 @@
-﻿using MySql.Data.MySqlClient;
+﻿using IMClient.Entity;
+using IMClient.Utils;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -40,61 +44,81 @@ namespace IMClient
                 if (stream.CanRead)
                 {
                     recvCount = stream.EndRead(ar);
-                    if (recvCount != 0)
+                    if (recvCount>0)
                     {
 
                         byte[] buffer = new byte[recvCount];
                         Array.Copy(bytes, 0, buffer, 0, recvCount);
-                        this.appendTextInvoke("收←" + Encoding.UTF8.GetString(buffer) + "\n");
-                        stream.BeginRead(bytes, 0, bytes.Length, receiveDataCallback, helper);
+                        string recvString = Encoding.UTF8.GetString(buffer);
+                        string instrction = recvString.Substring(0, 4);
+                        string content = recvString.Substring(4);
+                        switch (instrction)
+                        {
+                            case "@02@":
+                                List<UserAccount> accounts = JsonConvert.DeserializeObject<List<UserAccount>>(content);
+                                foreach (UserAccount account in accounts)
+                                {
+                                    ComboxItem item = new ComboxItem(account.NickName,account.UserId);
+                                    this.Invoke((EventHandler)delegate
+                                    {
+                                        cbFriendList.Items.Add(item);
+                                    });
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
+                MessageBox.Show("flag=="+ex.Message);
                 stream.Close();
                 helper.tcpClient.Close();
             }
 
         }
 
-        private void appendTextInvoke(String msg)
-        {
-            if (this.tbChatContent.InvokeRequired)
-            {
-                appendTextDelegate dele = new appendTextDelegate(appendTextInvoke);
-                this.tbChatContent.Invoke(dele, msg);
-            }
-            else
-            {
-                this.tbChatContent.AppendText(msg);
-            }
-        }
-
-
         private void btnSendData_Click(object sender, EventArgs e)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append("@2@");
-            string msg = this.tbSendData.Text;
-            builder.Append(msg);
-            if (clientHelper.tcpClient == null) return;
-            if (clientHelper.tcpClient.Connected == false) return;
-
-            byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
-
-            int len = data.Length;
-
-            NetworkStream writeStream = clientHelper.tcpClient.GetStream();
-            if (writeStream.CanWrite)
+            try
             {
-                writeStream.Write(data, 0, len);
-                this.tbChatContent.AppendText("发→" + msg + "\n");
-            }
-            else
+                string sendTo = cbFriendList.Text;
+                if (String.IsNullOrEmpty(sendTo))
+                {
+                    MessageBox.Show("请先选择聊天对象！");
+                }
+                else
+                {
+                    string userId = ((ComboxItem)this.cbFriendList.SelectedItem).Value.ToString();
+                    MessageBox.Show(userId);
+                    //builder.Append("@2@");
+                    //string msg = this.tbSendData.Text;
+                    //builder.Append(msg);
+                    //if (clientHelper.tcpClient == null) return;
+                    //if (clientHelper.tcpClient.Connected == false) return;
+
+                    //byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
+
+                    //int len = data.Length;
+
+                    //NetworkStream writeStream = clientHelper.tcpClient.GetStream();
+                    //if (writeStream.CanWrite)
+                    //{
+                    //    writeStream.Write(data, 0, len);
+                    //    this.tbChatContent.AppendText("发→" + msg + "\n");
+                    //}
+                    //else
+                    //{
+                    //    MessageBox.Show("写流无法使用");
+                    //    clientHelper.tcpClient.Close();
+                    //}
+                }
+            }catch(Exception ex)
             {
-                MessageBox.Show("写流无法使用");
-                clientHelper.tcpClient.Close();
+                MessageBox.Show("IMServer.btnSendData_Click" + ex.Message);
             }
 
         }
@@ -107,7 +131,32 @@ namespace IMClient
 
         private void Form1_Load(object sender, EventArgs e)
         {
-           
+            try
+            {
+                this.clientHelper.tcpClient.GetStream().BeginRead(bytes, 0, bytes.Length, receiveDataCallback, this.clientHelper);
+                StringBuilder builder = new StringBuilder();
+                builder.Append("@02@");
+                if (clientHelper.tcpClient == null) return;
+                if (clientHelper.tcpClient.Connected == false) return;
+
+                byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
+
+                int len = data.Length;
+
+                NetworkStream writeStream = clientHelper.tcpClient.GetStream();
+                if (writeStream.CanWrite)
+                {
+                    writeStream.Write(data, 0, len);
+                }
+                else
+                {
+                    MessageBox.Show("写流无法使用");
+                    clientHelper.tcpClient.Close();
+                }
+            }catch(Exception ex)
+            {
+                MessageBox.Show("load" + ex.Message);
+            }
         }
 
         private void formCloseAction(object sender, FormClosingEventArgs e)
@@ -126,7 +175,7 @@ namespace IMClient
 
         private void btnAddFriend_Click(object sender, EventArgs e)
         {
-            AddFriendForm addFriendForm = new AddFriendForm();
+            AddFriendForm addFriendForm = new AddFriendForm(clientHelper);
             addFriendForm.Show();
         }
     }
