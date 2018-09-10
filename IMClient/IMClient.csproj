@@ -64,6 +64,7 @@
     <Compile Include="AddFriendForm.Designer.cs">
       <DependentUpon>AddFriendForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity\ChatRecords.cs" />
     <Compile Include="Entity\UserAccount.cs" />
     <Compile Include="IMClient.cs">
       <SubType>Form</SubType>

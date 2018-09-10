@@ -89,12 +89,15 @@ namespace IMClient
                     });
                     foreach(UserAccount account in userAccounts)
                     {
-                        this.Invoke((EventHandler)delegate
+                        if (this.IsHandleCreated)
                         {
-                            int index = dataGridView2.Rows.Add();
-                            dataGridView2.Rows[index].Cells[0].Value = account.UserId;
-                            dataGridView2.Rows[index].Cells[1].Value = account.NickName;
-                        });
+                            this.Invoke((EventHandler)delegate
+                            {
+                                int index = dataGridView2.Rows.Add();
+                                dataGridView2.Rows[index].Cells[0].Value = account.UserId;
+                                dataGridView2.Rows[index].Cells[1].Value = account.NickName;
+                            });
+                        }
                     }
                 }
                 else
@@ -105,7 +108,8 @@ namespace IMClient
             }
             catch(Exception ex)
             {
-                MessageBox.Show("AddFriendForm-readCallback:" + ex.Message);
+                Console.WriteLine(("AddFriendForm-readCallback:" + ex.Message));
+                //MessageBox.Show("AddFriendForm-readCallback:" + ex.Message);
             }
         }
 

@@ -41,12 +41,10 @@ namespace IMClient
             this.UserId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NickName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Operation = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.userAccountBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.userAccountBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -91,7 +89,6 @@ namespace IMClient
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.dataGridView2);
-            this.groupBox2.Controls.Add(this.dataGridView1);
             this.groupBox2.Location = new System.Drawing.Point(37, 133);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(492, 237);
@@ -138,15 +135,6 @@ namespace IMClient
             this.Operation.ReadOnly = true;
             this.Operation.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(458, 110);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(8, 8);
-            this.dataGridView1.TabIndex = 1;
-            // 
             // AddFriendForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -162,7 +150,6 @@ namespace IMClient
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.userAccountBindingSource)).EndInit();
             this.ResumeLayout(false);
 
@@ -176,7 +163,6 @@ namespace IMClient
         private System.Windows.Forms.TextBox tbSearch;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.DataGridView dataGridView2;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.BindingSource userAccountBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn UserId;
         private System.Windows.Forms.DataGridViewTextBoxColumn NickName;

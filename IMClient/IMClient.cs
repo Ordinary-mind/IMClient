@@ -92,29 +92,36 @@ namespace IMClient
                 }
                 else
                 {
-                    string userId = ((ComboxItem)this.cbFriendList.SelectedItem).Value.ToString();
-                    MessageBox.Show(userId);
-                    //builder.Append("@2@");
-                    //string msg = this.tbSendData.Text;
-                    //builder.Append(msg);
-                    //if (clientHelper.tcpClient == null) return;
-                    //if (clientHelper.tcpClient.Connected == false) return;
+                    string userId = ((ComboxItem)cbFriendList.SelectedItem).Value.ToString();
+                    string nickName = ((ComboxItem)cbFriendList.SelectedItem).Key;
 
-                    //byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
+                    ChatRecords record = new ChatRecords();
+                    record.RecordId = Guid.NewGuid().ToString().Replace("-", "");
+                    record.FromId = clientHelper.UserId;
+                    record.ToId = int.Parse(userId);
+                    record.SendTime = DateTime.Now;
+                    record.Content = tbSendData.Text == null ? "" : tbSendData.Text;
+                    string content = JsonConvert.SerializeObject(record);
+                    builder.Append("@04@");
+                    builder.Append(content);
+                    if (clientHelper.tcpClient == null) return;
+                    if (clientHelper.tcpClient.Connected == false) return;
 
-                    //int len = data.Length;
+                    byte[] data = Encoding.UTF8.GetBytes(builder.ToString());
 
-                    //NetworkStream writeStream = clientHelper.tcpClient.GetStream();
-                    //if (writeStream.CanWrite)
-                    //{
-                    //    writeStream.Write(data, 0, len);
-                    //    this.tbChatContent.AppendText("发→" + msg + "\n");
-                    //}
-                    //else
-                    //{
-                    //    MessageBox.Show("写流无法使用");
-                    //    clientHelper.tcpClient.Close();
-                    //}
+                    int len = data.Length;
+
+                    NetworkStream writeStream = clientHelper.tcpClient.GetStream();
+                    if (writeStream.CanWrite)
+                    {
+                        writeStream.Write(data, 0, len);
+                        this.tbChatContent.AppendText("发→"+ nickName+":" + record.Content + "\n");
+                    }
+                    else
+                    {
+                        MessageBox.Show("写流无法使用");
+                        clientHelper.tcpClient.Close();
+                    }
                 }
             }catch(Exception ex)
             {
