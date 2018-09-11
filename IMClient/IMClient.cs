@@ -18,10 +18,8 @@ namespace IMClient
 {
     public partial class IMClient : Form
     {
-        public delegate void appendTextDelegate(String msg);
         ClientHelper clientHelper = new ClientHelper();
-        string serverIP = "127.0.0.1";
-        int port = 9000;
+        List<ComboxItem> items = new List<ComboxItem>();
         byte[] bytes = new byte[1024];
         public IMClient()
         {
@@ -61,8 +59,22 @@ namespace IMClient
                                     ComboxItem item = new ComboxItem(account.NickName,account.UserId);
                                     this.Invoke((EventHandler)delegate
                                     {
+                                        items.Add(item);
                                         cbFriendList.Items.Add(item);
                                     });
+                                }
+                                break;
+                            case "@04@":
+                                ChatRecords record = JsonConvert.DeserializeObject<ChatRecords>(content);
+                                if (record != null)
+                                {
+                                    var user = items.Where(item => Int32.Parse(item.Value.ToString()) == record.FromId).ToList();
+                                    if (user.Count > 0)
+                                    {
+                                        this.Invoke((EventHandler)delegate {
+                                            tbChatContent.AppendText("收←" + user[0].Key + ":" + record.Content + "\n");
+                                        });
+                                    }
                                 }
                                 break;
                             default:
@@ -70,6 +82,7 @@ namespace IMClient
                         }
                     }
                 }
+                stream.BeginRead(bytes, 0, bytes.Length,receiveDataCallback,helper);
             }
             catch (Exception ex)
             {

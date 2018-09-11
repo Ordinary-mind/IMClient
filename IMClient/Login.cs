@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using IMClient.Entity;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Data;
@@ -57,15 +58,18 @@ namespace IMClient
                     string content = str.Substring(4);
                     if (instruction.Equals("@01@"))
                     {
-                        if (content.Equals("1"))
+                        UserAccount account = JsonConvert.DeserializeObject<UserAccount>(content);
+                        if (account != null)
                         {
+                            helper.UserId = account.UserId;
+                            helper.NickName = account.NickName;
                             this.Hide();
                             this.Invoke(new MethodInvoker(() =>
                             {
                                 IMClient client = new IMClient(helper);
                                 client.Show();
                             }));
-                        }
+                        }  
                         else
                         {
                             MessageBox.Show("用户名或密码错误！");
