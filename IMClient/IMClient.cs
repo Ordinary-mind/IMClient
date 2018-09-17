@@ -18,17 +18,38 @@ namespace IMClient
 {
     public partial class IMClient : Form
     {
-        ClientHelper clientHelper = new ClientHelper();
+        ClientHelper clientHelper = Login.helper;
         List<ComboxItem> items = new List<ComboxItem>();
-        byte[] bytes = new byte[1024];
+        AddFriendForm addFriendForm = null;
+        //private string toAddFriendFormString;
+        //public string ToAddFriendFormString
+        //{
+        //    get
+        //    {
+        //        return toAddFriendFormString;
+        //    }
+        //    set
+        //    {
+        //        if (value != toAddFriendFormString)
+        //        {
+        //            toAddFriendFormString = value;
+        //            ValueChanged();
+        //        }
+        //    }
+        //}
+
+        //private void ValueChanged()
+        //{
+        //    if (ValueChangeEvent != null)
+        //    {
+                
+        //    }
+        //}
+
+        byte[] bytes = new byte[10240];
+        
         public IMClient()
         {
-            
-            
-        }
-        public IMClient(ClientHelper clientHelper)
-        {
-            this.clientHelper = clientHelper;
             InitializeComponent();
         }
 
@@ -62,6 +83,14 @@ namespace IMClient
                                         items.Add(item);
                                         cbFriendList.Items.Add(item);
                                     });
+                                }
+                                break;
+                            case "@03@":
+                                if (addFriendForm != null) addFriendForm.ContentFromServer = content;
+                                else
+                                {
+                                    addFriendForm = new AddFriendForm();
+                                    addFriendForm.ContentFromServer = content;
                                 }
                                 break;
                             case "@04@":
@@ -195,7 +224,7 @@ namespace IMClient
 
         private void btnAddFriend_Click(object sender, EventArgs e)
         {
-            AddFriendForm addFriendForm = new AddFriendForm(clientHelper);
+            addFriendForm = new AddFriendForm();
             addFriendForm.Show();
         }
     }

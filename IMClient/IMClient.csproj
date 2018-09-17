@@ -88,6 +88,7 @@
     </Compile>
     <Compile Include="ClientHelper.cs" />
     <Compile Include="Utils\ComboxItem.cs" />
+    <Compile Include="Utils\InstructionResolver.cs" />
     <EmbeddedResource Include="AddFriendForm.resx">
       <DependentUpon>AddFriendForm.cs</DependentUpon>
     </EmbeddedResource>

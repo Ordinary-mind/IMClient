@@ -12,7 +12,7 @@ namespace IMClient
 {
     public partial class Login : Form
     {
-        ClientHelper helper = new ClientHelper();
+        public static ClientHelper helper = new ClientHelper();
         string serverIP = "127.0.0.1";
         int port = 9000;
         byte[] bytes = new byte[1024];
@@ -66,7 +66,7 @@ namespace IMClient
                             this.Hide();
                             this.Invoke(new MethodInvoker(() =>
                             {
-                                IMClient client = new IMClient(helper);
+                                IMClient client = new IMClient();
                                 client.Show();
                             }));
                         }  

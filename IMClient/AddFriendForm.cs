@@ -10,23 +10,66 @@ using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static IMClient.IMClient;
 
 namespace IMClient
 {
     public partial class AddFriendForm : Form
     {
-        public ClientHelper clientHelper = null;
+        public ClientHelper clientHelper = Login.helper;
         byte[] bytes = new byte[10240];
+        private string contentFromServer;
+        public string ContentFromServer
+        {
+            get { return contentFromServer; }
+            set
+            {
+                if (value != contentFromServer)
+                {
+                    contentFromServer = value;
+                    ValueChanged();
+                }
+                else if (contentFromServer=="[]")
+                {
+                    this.Invoke((EventHandler)delegate {
+                        dataGridView2.Rows.Clear();
+                    });
+                    MessageBox.Show("未搜索到相关用户！");
+                }
+            }
+        }
+
+        private void ValueChanged()
+        {
+            List<UserAccount> userAccounts = JsonConvert.DeserializeObject<List<UserAccount>>(contentFromServer);
+            if (userAccounts.Count > 0)
+            {
+                while (!this.IsHandleCreated) { }
+                this.Invoke((EventHandler)delegate {
+                    dataGridView2.Rows.Clear();
+                });
+                foreach (UserAccount account in userAccounts)
+                {
+                    this.Invoke((EventHandler)delegate
+                    {
+                        int index = dataGridView2.Rows.Add();
+                        dataGridView2.Rows[index].Cells[0].Value = account.UserId;
+                        dataGridView2.Rows[index].Cells[1].Value = account.NickName;
+                    });
+                }
+            }
+            else
+            {
+                MessageBox.Show("未搜索到相关用户！");
+            }
+        }
+
         public AddFriendForm()
         {
-            
-        }
-        public AddFriendForm(ClientHelper clientHelper)
-        {
             InitializeComponent();
-            this.clientHelper = clientHelper;
         }
 
         private void btnConfirm_Click(object sender, EventArgs e)
@@ -53,20 +96,25 @@ namespace IMClient
 
         private void AddFriendForm_Load(object sender, EventArgs e)
         {
-            try
-            {
-                TcpClient client = clientHelper.tcpClient;
-                NetworkStream stream = client.GetStream();
-                if (stream.CanRead)
-                {
-                    stream.BeginRead(bytes, 0, bytes.Length, readCallback, clientHelper);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("AddFriendForm-AddFriendForm_Load:" + ex.Message);
-            }
+            //try
+            //{
+            //    TcpClient client = clientHelper.tcpClient;
+            //    NetworkStream stream = client.GetStream();
+            //    if (stream.CanRead)
+            //    {
+            //        stream.BeginRead(bytes, 0, bytes.Length, readCallback, clientHelper);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("AddFriendForm-AddFriendForm_Load:" + ex.Message);
+            //}
 
+        }
+
+        private void afterMyValueChanged(object sender, EventArgs e)
+        {
+            Console.WriteLine("111111");
         }
 
         private void readCallback(IAsyncResult ar)
@@ -84,20 +132,18 @@ namespace IMClient
                 List<UserAccount> userAccounts = JsonConvert.DeserializeObject<List<UserAccount>>(content);
                 if (userAccounts.Count>0)
                 {
+                    while (!this.IsHandleCreated) { }
                     this.Invoke((EventHandler)delegate {
                         dataGridView2.Rows.Clear();
                     });
                     foreach(UserAccount account in userAccounts)
                     {
-                        if (this.IsHandleCreated)
+                        this.Invoke((EventHandler)delegate
                         {
-                            this.Invoke((EventHandler)delegate
-                            {
-                                int index = dataGridView2.Rows.Add();
-                                dataGridView2.Rows[index].Cells[0].Value = account.UserId;
-                                dataGridView2.Rows[index].Cells[1].Value = account.NickName;
-                            });
-                        }
+                            int index = dataGridView2.Rows.Add();
+                            dataGridView2.Rows[index].Cells[0].Value = account.UserId;
+                            dataGridView2.Rows[index].Cells[1].Value = account.NickName;
+                        });
                     }
                 }
                 else
