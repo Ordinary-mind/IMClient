@@ -21,30 +21,6 @@ namespace IMClient
         ClientHelper clientHelper = Login.helper;
         List<ComboxItem> items = new List<ComboxItem>();
         AddFriendForm addFriendForm = null;
-        //private string toAddFriendFormString;
-        //public string ToAddFriendFormString
-        //{
-        //    get
-        //    {
-        //        return toAddFriendFormString;
-        //    }
-        //    set
-        //    {
-        //        if (value != toAddFriendFormString)
-        //        {
-        //            toAddFriendFormString = value;
-        //            ValueChanged();
-        //        }
-        //    }
-        //}
-
-        //private void ValueChanged()
-        //{
-        //    if (ValueChangeEvent != null)
-        //    {
-                
-        //    }
-        //}
 
         byte[] bytes = new byte[10240];
         
@@ -71,6 +47,13 @@ namespace IMClient
                         string recvString = Encoding.UTF8.GetString(buffer);
                         string instrction = recvString.Substring(0, 4);
                         string content = recvString.Substring(4);
+                        /**
+                         * 指令含义
+                         * 01 登录认证
+                         * 02 获取好友列表
+                         * 03 获取返回的搜索信息
+                         * 04 收到别人发来的信息
+                         */
                         switch (instrction)
                         {
                             case "@02@":

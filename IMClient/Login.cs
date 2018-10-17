@@ -22,7 +22,7 @@ namespace IMClient
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
-        {
+         {
             String userName = this.tbUserName.Text;
             String password = this.tbPassword.Text;
             if (String.IsNullOrEmpty(userName) || String.IsNullOrEmpty(password))
