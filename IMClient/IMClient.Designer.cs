@@ -128,6 +128,7 @@ namespace IMClient
             // 
             // cbFriendList
             // 
+            this.cbFriendList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbFriendList.FormattingEnabled = true;
             this.cbFriendList.Location = new System.Drawing.Point(76, 28);
             this.cbFriendList.Name = "cbFriendList";
@@ -150,7 +151,7 @@ namespace IMClient
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(56, 17);
             this.toolStripStatusLabel1.Text = "状态信息";
             // 
-            // Form1
+            // IMClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -158,7 +159,7 @@ namespace IMClient
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
-            this.Name = "Form1";
+            this.Name = "IMClient";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "IM客户端";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formCloseAction);

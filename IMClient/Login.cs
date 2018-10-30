@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using IMClient.Entity;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using System;
 using System.Data;
@@ -11,7 +12,7 @@ namespace IMClient
 {
     public partial class Login : Form
     {
-        ClientHelper helper = new ClientHelper();
+        public static ClientHelper helper = new ClientHelper();
         string serverIP = "127.0.0.1";
         int port = 9000;
         byte[] bytes = new byte[1024];
@@ -21,7 +22,7 @@ namespace IMClient
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
-        {
+         {
             String userName = this.tbUserName.Text;
             String password = this.tbPassword.Text;
             if (String.IsNullOrEmpty(userName) || String.IsNullOrEmpty(password))
@@ -57,15 +58,18 @@ namespace IMClient
                     string content = str.Substring(4);
                     if (instruction.Equals("@01@"))
                     {
-                        if (content.Equals("1"))
+                        UserAccount account = JsonConvert.DeserializeObject<UserAccount>(content);
+                        if (account != null)
                         {
+                            helper.UserId = account.UserId;
+                            helper.NickName = account.NickName;
                             this.Hide();
                             this.Invoke(new MethodInvoker(() =>
                             {
-                                IMClient client = new IMClient(helper);
+                                IMClient client = new IMClient();
                                 client.Show();
                             }));
-                        }
+                        }  
                         else
                         {
                             MessageBox.Show("用户名或密码错误！");

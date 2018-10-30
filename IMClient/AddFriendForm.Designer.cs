@@ -1,4 +1,6 @@
-﻿using IMClient.Entity;
+﻿using System;
+using System.Windows.Forms;
+using IMClient.Entity;
 
 namespace IMClient
 {

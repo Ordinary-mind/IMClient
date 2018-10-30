@@ -18,19 +18,14 @@ namespace IMClient
 {
     public partial class IMClient : Form
     {
-        public delegate void appendTextDelegate(String msg);
-        ClientHelper clientHelper = new ClientHelper();
-        string serverIP = "127.0.0.1";
-        int port = 9000;
-        byte[] bytes = new byte[1024];
+        ClientHelper clientHelper = Login.helper;
+        List<ComboxItem> items = new List<ComboxItem>();
+        AddFriendForm addFriendForm = null;
+
+        byte[] bytes = new byte[10240];
+        
         public IMClient()
         {
-            
-            
-        }
-        public IMClient(ClientHelper clientHelper)
-        {
-            this.clientHelper = clientHelper;
             InitializeComponent();
         }
 
@@ -52,18 +47,44 @@ namespace IMClient
                         string recvString = Encoding.UTF8.GetString(buffer);
                         string instrction = recvString.Substring(0, 4);
                         string content = recvString.Substring(4);
+                        /**
+                         * 指令含义
+                         * 01 登录认证
+                         * 02 获取好友列表
+                         * 03 获取返回的搜索信息
+                         * 04 收到别人发来的信息
+                         */
                         switch (instrction)
                         {
                             case "@02@":
                                 List<UserAccount> accounts = JsonConvert.DeserializeObject<List<UserAccount>>(content);
-                                if (accounts != null)
+                                foreach (UserAccount account in accounts)
                                 {
-                                    foreach (UserAccount account in accounts)
+                                    ComboxItem item = new ComboxItem(account.NickName,account.UserId);
+                                    this.Invoke((EventHandler)delegate
                                     {
-                                        ComboxItem item = new ComboxItem(account.NickName, account.UserId);
-                                        this.Invoke((EventHandler)delegate
-                                        {
-                                            cbFriendList.Items.Add(item);
+                                        items.Add(item);
+                                        cbFriendList.Items.Add(item);
+                                    });
+                                }
+                                break;
+                            case "@03@":
+                                if (addFriendForm != null) addFriendForm.ContentFromServer = content;
+                                else
+                                {
+                                    addFriendForm = new AddFriendForm();
+                                    addFriendForm.ContentFromServer = content;
+                                }
+                                break;
+                            case "@04@":
+                                ChatRecords record = JsonConvert.DeserializeObject<ChatRecords>(content);
+                                if (record != null)
+                                {
+                                    var user = items.Where(item => Int32.Parse(item.Value.ToString()) == record.FromId).ToList();
+                                    if (user.Count > 0)
+                                    {
+                                        this.Invoke((EventHandler)delegate {
+                                            tbChatContent.AppendText("收←" + user[0].Key + ":" + record.Content + "\n");
                                         });
                                     }
                                 }
@@ -73,6 +94,7 @@ namespace IMClient
                         }
                     }
                 }
+                stream.BeginRead(bytes, 0, bytes.Length,receiveDataCallback,helper);
             }
             catch (Exception ex)
             {
@@ -185,7 +207,7 @@ namespace IMClient
 
         private void btnAddFriend_Click(object sender, EventArgs e)
         {
-            AddFriendForm addFriendForm = new AddFriendForm(clientHelper);
+            addFriendForm = new AddFriendForm();
             addFriendForm.Show();
         }
     }
