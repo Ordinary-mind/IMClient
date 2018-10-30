@@ -58,7 +58,14 @@ namespace IMClient
                     string content = str.Substring(4);
                     if (instruction.Equals("@01@"))
                     {
-                        UserAccount account = JsonConvert.DeserializeObject<UserAccount>(content);
+                        UserAccount account = null;
+                        try
+                        {
+                            account = JsonConvert.DeserializeObject<UserAccount>(content);
+                        }catch(Exception ee)
+                        {
+
+                        }
                         if (account != null)
                         {
                             helper.UserId = account.UserId;
@@ -79,7 +86,7 @@ namespace IMClient
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show("用户名或密码错误！");
                 }
             }
         }
