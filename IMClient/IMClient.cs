@@ -56,13 +56,16 @@ namespace IMClient
                         {
                             case "@02@":
                                 List<UserAccount> accounts = JsonConvert.DeserializeObject<List<UserAccount>>(content);
-                                foreach (UserAccount account in accounts)
+                                if (accounts != null)
                                 {
-                                    ComboxItem item = new ComboxItem(account.NickName,account.UserId);
-                                    this.Invoke((EventHandler)delegate
+                                    foreach (UserAccount account in accounts)
                                     {
-                                        cbFriendList.Items.Add(item);
-                                    });
+                                        ComboxItem item = new ComboxItem(account.NickName, account.UserId);
+                                        this.Invoke((EventHandler)delegate
+                                        {
+                                            cbFriendList.Items.Add(item);
+                                        });
+                                    }
                                 }
                                 break;
                             default:
